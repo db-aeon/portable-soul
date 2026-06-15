@@ -1,0 +1,86 @@
+{
+  "@context": [
+    "https://portablesoul.org/profiles/0.5.0-draft/memory-graph.context.jsonld",
+    {
+      "supersedes": "psoul:supersedes",
+      "contradicts": "psoul:contradicts",
+      "recalledIn": "psoul:recalledIn"
+    }
+  ],
+  "graph": [
+    {
+      "@id": "urn:psoul:entity:35698febaf1bf3ef",
+      "@type": [
+        "prov:Entity",
+        "psoul:Preference"
+      ],
+      "entityType": "preference",
+      "content": "Prefers Markdown-based OKF registries over proprietary catalogs.",
+      "content_hash": "sha256:f7f87da884b8def1d1f7ae198b5b9e9145100fc6eee7ec632e6a35e8f25c0392",
+      "wasGeneratedBy": "urn:psoul:activity:retain-001",
+      "wasDerivedFrom": "urn:psoul:session:2026-06-14T17:22:00Z#turn-12",
+      "generatedAtTime": "2026-06-14T17:22:09Z",
+      "inContext": "urn:psoul:workspace:incident-response"
+    },
+    {
+      "@id": "urn:psoul:entity:3607810065c1af98",
+      "@type": [
+        "prov:Entity",
+        "psoul:Fact"
+      ],
+      "entityType": "abstract_concept",
+      "content": "Memory leak triage playbook for container OOM incidents.",
+      "content_hash": "sha256:9e92c864f7160ce2fe39d8ff10dff48ff09ee64bfc42d8dc15de1db9f50c062e",
+      "wasGeneratedBy": "urn:psoul:activity:generalize-001",
+      "wasDerivedFrom": "urn:psoul:workspace:incident-response",
+      "generatedAtTime": "2026-04-02T11:14:00Z",
+      "inContext": "urn:psoul:workspace:incident-response"
+    },
+    {
+      "@id": "urn:psoul:session:2026-06-14T17:22:00Z#turn-12",
+      "@type": "psoul:SessionTurn"
+    },
+    {
+      "@id": "urn:psoul:activity:retain-001",
+      "@type": "prov:Activity",
+      "activityType": "urn:psoul:activity:memory.retain",
+      "wasAssociatedWith": "urn:psoul:agent:core-principal-09e",
+      "generatedAtTime": "2026-06-14T17:22:09Z"
+    },
+    {
+      "@id": "urn:psoul:activity:generalize-001",
+      "@type": "prov:Activity",
+      "activityType": "urn:psoul:activity:knowledge.generalize",
+      "wasAssociatedWith": "urn:psoul:agent:core-principal-09e",
+      "generatedAtTime": "2026-04-02T11:14:00Z"
+    },
+    {
+      "@id": "urn:psoul:agent:core-principal-09e",
+      "@type": "prov:Agent",
+      "actorType": "software"
+    },
+    {
+      "@id": "urn:psoul:entity:f9ddd401cb64a131",
+      "@type": [
+        "prov:Entity",
+        "psoul:MemoryNode"
+      ],
+      "entityType": "skill",
+      "content": "Skill triage-incident v1.0.0",
+      "wasGeneratedBy": "urn:psoul:activity:amend-001",
+      "wasDerivedFrom": [
+        "urn:psoul:entity:a1b2c3d4e5f67890",
+        "urn:psoul:session:2026-06-14T17:22:00Z#turn-12"
+      ],
+      "generatedAtTime": "2026-06-15T09:30:00Z",
+      "inContext": "urn:psoul:workspace:incident-response",
+      "recalledIn": "urn:psoul:session:2026-06-15T08:00:00Z#turn-3",
+      "content_hash": "sha256:29f1a88f085f54872982058538392ef3601357025f416b68f72120957b04ad1e"
+    },
+    {
+      "@id": "urn:psoul:activity:amend-001",
+      "@type": "prov:Activity",
+      "activityType": "urn:psoul:activity:skill.amend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "spec_version": "0.5.0-draft",
+  "bundle_id": "urn:psoul:bundle:33333333-3333-4333-8333-333333333333",
+  "created_at": "2026-06-15T12:00:00Z",
+  "source_agent_id": "urn:psoul:agent:bad-example",
+  "artifact_index": [
+    {
+      "path": "knowledge/no-prov.md",
+      "sha256": "9765596dd0ca8fce71e906d5f73119b40850290b7efe4c72cdd671bd18fe4560",
+      "bytes": 134
+    }
+  ]
+}

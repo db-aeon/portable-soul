@@ -1,0 +1,21 @@
+{
+  "entity_id": "urn:psoul:entity:f9923a1b2c3d4e5f",
+  "entity_type": "fact",
+  "content": "Prefers Markdown-based OKF registries over proprietary catalogs.",
+  "content_hash": "sha256:7c4e8f2a1b9d3e6058473921a0b8c7d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b",
+  "prov": {
+    "generated_by": {
+      "activity": "urn:psoul:activity:memory.retain",
+      "agent": { "type": "software", "id": "urn:psoul:agent:core-principal-09e" },
+      "on_behalf_of": { "type": "person", "id": "user:jdoe" }
+    },
+    "derived_from": [
+      {
+        "source": "urn:psoul:session:2026-06-14T17:22:00Z#turn-12",
+        "kind": "conversation"
+      }
+    ],
+    "generated_at": "2026-06-14T17:22:09Z",
+    "in_context": "urn:psoul:workspace:incident-response"
+  }
+}

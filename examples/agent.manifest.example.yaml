@@ -1,0 +1,73 @@
+spec_version: "0.5.0-draft"
+agent_id: "urn:psoul:agent:core-principal-09e"
+metadata:
+  name: "Cognitive Workspace Router"
+  description: "Example conformant agent for reference and testing."
+  exported_at: "2026-06-15T12:00:00Z"
+topology:
+  orchestration:
+    - role: primary_reasoning_loop
+      implementation:
+        name: "ExampleHarness"
+        version: "2.4.1"
+        uri: "urn:psoul:impl:example-harness"
+        modifications:
+          - "Custom dynamic instruction routing via internal gateway"
+    - role: sandbox_execution
+      implementation:
+        name: "ExampleSandbox"
+        version: "1.0.0"
+        uri: "urn:psoul:impl:example-sandbox"
+  models:
+    - role: primary_reasoner
+      provider: "ExampleCloud"
+      endpoint: "frontier-model-2026-05"
+      tier: frontier-api
+    - role: fallback_router
+      provider: "local-inference"
+      endpoint: "edge-model-70b-fp8"
+      tier: edge-compute
+    - role: embedding
+      provider: "ExampleCloud"
+      endpoint: "embed-v3"
+      tier: managed-service
+  memory_systems:
+    - role: conversation_memory
+      implementation:
+        name: "ExampleGraphMemory"
+        version: "1.2.0"
+        uri: "urn:psoul:impl:example-graph-memory"
+      exportable: true
+    - role: file_index
+      implementation:
+        name: "ExampleFileIndex"
+        version: "0.9.1"
+        uri: "urn:psoul:impl:example-file-index"
+      exportable: true
+    - role: ephemeral_cache
+      implementation:
+        name: "SessionStateBroker"
+        version: "1.0.0"
+      exportable: false
+  tools:
+    - role: file_search
+      protocol: mcp
+      endpoint: "http://127.0.0.1:7432/mcp"
+      name: "hybrid-search"
+    - role: terminal
+      protocol: native
+      name: "sandbox-shell"
+  connectors:
+    - role: mail_ingress
+      provider: "example-oauth-bridge"
+      data_direction: ingress
+    - role: calendar_ingress
+      provider: "example-oauth-bridge"
+      data_direction: ingress
+  interfaces:
+    - role: chat
+      protocol: openai-compatible-http
+    - role: voice
+      protocol: websocket-realtime
+    - role: scheduled_tasks
+      protocol: cron

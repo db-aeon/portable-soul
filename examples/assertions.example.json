@@ -1,0 +1,26 @@
+[
+  {
+    "entity_id": "urn:psoul:entity:f9923a1b2c3d4e5f",
+    "assertions": [
+      {
+        "claim": "data_class",
+        "value": "personal_heuristic",
+        "asserted_by": { "type": "person", "id": "user:jdoe" },
+        "asserted_at": "2026-06-15T09:00:00Z"
+      },
+      {
+        "claim": "license",
+        "value": "portable",
+        "asserted_by": { "type": "org", "id": "org:acme-corp" },
+        "asserted_at": "2026-06-15T09:05:00Z"
+      },
+      {
+        "claim": "license",
+        "value": "internal-only",
+        "asserted_by": { "type": "person", "id": "user:legal-reviewer" },
+        "asserted_at": "2026-06-15T10:00:00Z",
+        "note": "Conflicting claim preserved — spec does not arbitrate."
+      }
+    ]
+  }
+]

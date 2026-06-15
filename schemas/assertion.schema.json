@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portablesoul.org/schemas/0.5.0-draft/assertion.schema.json",
+  "title": "Portable Soul Entity Assertions",
+  "description": "Contestable claims about Entities. Conflicting assertions are preserved.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["entity_id", "assertions"],
+  "properties": {
+    "entity_id": {
+      "type": "string",
+      "pattern": "^urn:psoul:entity:[a-f0-9]{16}$"
+    },
+    "assertions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/singleAssertion" }
+    }
+  },
+  "$defs": {
+    "actorRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["person", "software", "org", "service"]
+        },
+        "id": { "type": "string", "minLength": 1 }
+      }
+    },
+    "singleAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim", "value", "asserted_by", "asserted_at"],
+      "properties": {
+        "claim": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["license", "data_class", "visibility", "retention"]
+            },
+            {
+              "type": "string",
+              "pattern": "^x-[a-z0-9-]+$"
+            }
+          ]
+        },
+        "value": { "type": "string", "minLength": 1 },
+        "asserted_by": { "$ref": "#/$defs/actorRef" },
+        "asserted_at": { "type": "string", "format": "date-time" },
+        "note": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portablesoul.org/schemas/0.5.0-draft/memory-graph.schema.json",
+  "title": "Portable Soul Memory Graph",
+  "description": "JSON-LD array of PROV-compatible graph nodes and edges.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["@context", "graph"],
+  "properties": {
+    "@context": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "object" },
+        { "type": "array" }
+      ]
+    },
+    "graph": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/graphNode" }
+    }
+  },
+  "$defs": {
+    "graphNode": {
+      "type": "object",
+      "required": ["@id", "@type"],
+      "properties": {
+        "@id": { "type": "string" },
+        "@type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "prov:Entity",
+                "prov:Activity",
+                "prov:Agent",
+                "psoul:Fact",
+                "psoul:Preference",
+                "psoul:MemoryNode",
+                "psoul:SessionTurn"
+              ]
+            },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "content": { "type": "string" },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "prov:wasDerivedFrom": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "prov:wasGeneratedBy": { "type": "string" },
+        "prov:generatedAtTime": { "type": "string", "format": "date-time" },
+        "psoul:inContext": { "type": "string" },
+        "psoul:entityType": { "type": "string" },
+        "psoul:activityType": { "type": "string" },
+        "psoul:actorType": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

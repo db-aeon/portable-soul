@@ -1,0 +1,49 @@
+[
+  {
+    "entity_id": "urn:psoul:entity:35698febaf1bf3ef",
+    "assertions": [
+      {
+        "claim": "data_class",
+        "value": "personal_heuristic",
+        "asserted_by": {
+          "type": "person",
+          "id": "user:jdoe"
+        },
+        "asserted_at": "2026-06-15T09:00:00Z"
+      },
+      {
+        "claim": "license",
+        "value": "portable",
+        "asserted_by": {
+          "type": "org",
+          "id": "org:acme-corp"
+        },
+        "asserted_at": "2026-06-15T09:05:00Z"
+      },
+      {
+        "claim": "license",
+        "value": "internal-only",
+        "asserted_by": {
+          "type": "person",
+          "id": "user:legal-reviewer"
+        },
+        "asserted_at": "2026-06-15T10:00:00Z",
+        "note": "Conflicting claims preserved side by side."
+      }
+    ]
+  },
+  {
+    "entity_id": "urn:psoul:entity:3607810065c1af98",
+    "assertions": [
+      {
+        "claim": "license",
+        "value": "portable",
+        "asserted_by": {
+          "type": "org",
+          "id": "org:acme-corp"
+        },
+        "asserted_at": "2026-06-15T09:05:00Z"
+      }
+    ]
+  }
+]

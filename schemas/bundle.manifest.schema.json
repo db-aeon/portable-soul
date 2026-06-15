@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portablesoul.org/schemas/0.5.0-draft/bundle.manifest.schema.json",
+  "title": "Portable Soul Bundle Manifest",
+  "description": "Schema for manifest.json at the root of a .soul bundle.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "spec_version",
+    "bundle_id",
+    "created_at",
+    "source_agent_id",
+    "artifact_index"
+  ],
+  "properties": {
+    "spec_version": {
+      "type": "string",
+      "pattern": "^0\\.5\\.0-draft$"
+    },
+    "bundle_id": {
+      "type": "string",
+      "pattern": "^urn:psoul:bundle:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_agent_id": {
+      "type": "string",
+      "pattern": "^urn:psoul:agent:[a-z0-9-]{3,64}$"
+    },
+    "label": { "type": "string" },
+    "composition_snapshot": {
+      "type": "string",
+      "description": "Relative path to bundled agent.yaml, typically agent.yaml"
+    },
+    "export_filter": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "description": { "type": "string" },
+        "assertion_claim": { "type": "string" },
+        "assertion_value": { "type": "string" }
+      }
+    },
+    "artifact_index": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/artifactEntry" }
+    },
+    "signatures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "type"],
+        "properties": {
+          "path": { "type": "string" },
+          "type": { "type": "string", "enum": ["c2pa", "self-issued", "x509"] },
+          "credential_issuer": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "artifactEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "POSIX-style relative path within the bundle."
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "media_type": { "type": "string" }
+      }
+    }
+  }
+}

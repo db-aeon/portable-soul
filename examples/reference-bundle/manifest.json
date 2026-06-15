@@ -1,0 +1,55 @@
+{
+  "spec_version": "0.5.0-draft",
+  "bundle_id": "urn:psoul:bundle:550e8400-e29b-41d4-a716-446655440000",
+  "created_at": "2026-06-15T12:00:00Z",
+  "source_agent_id": "urn:psoul:agent:core-principal-09e",
+  "label": "reference-bundle",
+  "composition_snapshot": "agent.yaml",
+  "export_filter": {
+    "description": "Entities with license:portable assertion",
+    "assertion_claim": "license",
+    "assertion_value": "portable"
+  },
+  "artifact_index": [
+    {
+      "path": "agent.yaml",
+      "sha256": "a8c37ce26533c45816fc6a380a8b53ccaa7b66ceca291ae49b67a81b8403e7e1",
+      "bytes": 1395
+    },
+    {
+      "path": "assertions/entities.json",
+      "sha256": "e1e4bc7ea890357b9d96d74bc8c806db3836e5095a0ee1d4ccbfeee08ee27192",
+      "bytes": 1119
+    },
+    {
+      "path": "knowledge/concepts/incident-triage.md",
+      "sha256": "f8a755d7f25ded6a90bf5f9b070a82e471cff620d8eade5a9e19febb02f3a70d",
+      "bytes": 971
+    },
+    {
+      "path": "knowledge/concepts/preference-okf.md",
+      "sha256": "b9496d9341c673a51aad86fc2153d2418998b3076d73a080e7f47bc9f17ea79e",
+      "bytes": 795
+    },
+    {
+      "path": "memory/graph.jsonld",
+      "sha256": "cd214d250b1d3a9bcab3d8ccbbc5a02be2a41dc4bc466590da3c8caf99270d61",
+      "bytes": 3028
+    },
+    {
+      "path": "skills/triage-incident/SKILL.md",
+      "sha256": "29f1a88f085f54872982058538392ef3601357025f416b68f72120957b04ad1e",
+      "bytes": 647
+    },
+    {
+      "path": "skills/triage-incident/provenance.json",
+      "sha256": "8adbbea772e18c0c336ee4c41061ab7d365b38abcd6bf1994674cce92233e75f",
+      "bytes": 1496
+    },
+    {
+      "path": "skills/triage-incident/references/standard_operating_procedure.md",
+      "sha256": "d81f7849cacd0ca074d0c14bacb6a37b4f1b55aa126e8cf2b30a54a26a18aafe",
+      "bytes": 283
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "entity_id": "urn:psoul:entity:aaaaaaaaaaaaaaaa",
+  "entity_type": "fact",
+  "content": "This entity incorrectly embeds license in provenance.",
+  "content_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "license": "proprietary",
+  "prov": {
+    "generated_by": {
+      "activity": "urn:psoul:activity:memory.retain",
+      "agent": { "type": "software", "id": "urn:psoul:agent:bad-example" }
+    },
+    "derived_from": [
+      { "source": "urn:psoul:session:2026-06-14T17:22:00Z#turn-1", "kind": "conversation" }
+    ],
+    "generated_at": "2026-06-14T17:22:09Z"
+  }
+}
