@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portablesoul.org/schemas/0.6.0-draft/agent.manifest.minimal.schema.json",
+  "title": "Portable Soul Agent Manifest (Level 0 minimal)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["spec_version", "agent_id"],
+  "properties": {
+    "spec_version": {
+      "type": "string",
+      "pattern": "^0\\.6\\.0-draft$"
+    },
+    "conformance_level": { "type": "integer", "enum": [0] },
+    "agent_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" }
+      }
+    },
+    "models": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["provider", "endpoint"],
+        "properties": {
+          "provider": { "type": "string" },
+          "endpoint": { "type": "string" }
+        }
+      }
+    },
+    "memory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "exportable": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

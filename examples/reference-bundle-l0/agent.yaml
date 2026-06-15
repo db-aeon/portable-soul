@@ -1,0 +1,11 @@
+spec_version: "0.6.0-draft"
+conformance_level: 0
+agent_id: "example-assistant"
+metadata:
+  name: "Example Assistant"
+models:
+  - provider: ExampleCloud
+    endpoint: gpt-4o
+memory:
+  - name: example-memory
+    exportable: true

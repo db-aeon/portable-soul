@@ -1,20 +1,15 @@
 {
-  "spec_version": "0.5.0-draft",
-  "bundle_id": "urn:psoul:bundle:550e8400-e29b-41d4-a716-446655440000",
-  "created_at": "2026-06-15T12:00:00Z",
-  "source_agent_id": "urn:psoul:agent:core-principal-09e",
+  "spec_version": "0.6.0-draft",
+  "conformance_level": 1,
+  "bundle_id": "urn:psoul:bundle:28ebb663-0255-4b57-8d94-59e6ad177460",
+  "created_at": "2026-06-15T20:23:34.784Z",
+  "source_agent_id": "core-principal-09e",
   "label": "reference-bundle",
-  "composition_snapshot": "agent.yaml",
-  "export_filter": {
-    "description": "Entities with license:portable assertion",
-    "assertion_claim": "license",
-    "assertion_value": "portable"
-  },
   "artifact_index": [
     {
       "path": "agent.yaml",
-      "sha256": "a8c37ce26533c45816fc6a380a8b53ccaa7b66ceca291ae49b67a81b8403e7e1",
-      "bytes": 1395
+      "sha256": "33b29612d2a35fd6e5068afe5f20fcb92d2b04c7716c49fd9105e0849d92cec0",
+      "bytes": 1400
     },
     {
       "path": "assertions/entities.json",
@@ -51,5 +46,6 @@
       "sha256": "d81f7849cacd0ca074d0c14bacb6a37b4f1b55aa126e8cf2b30a54a26a18aafe",
       "bytes": 283
     }
-  ]
+  ],
+  "composition_snapshot": "agent.yaml"
 }

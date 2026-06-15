@@ -1,19 +1,20 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://portablesoul.org/schemas/0.5.0-draft/agent.manifest.schema.json",
-  "title": "Portable Soul Agent Composition Manifest",
-  "description": "Schema for agent.yaml — declares the full application-layer data path.",
+  "$id": "https://portablesoul.org/schemas/0.6.0-draft/agent.manifest.schema.json",
+  "title": "Portable Soul Agent Composition Manifest (Level 1)",
   "type": "object",
   "additionalProperties": false,
   "required": ["spec_version", "agent_id", "metadata", "topology"],
   "properties": {
     "spec_version": {
       "type": "string",
-      "pattern": "^0\\.5\\.0-draft$"
+      "pattern": "^0\\.6\\.0-draft$"
     },
+    "conformance_level": { "type": "integer", "enum": [1] },
     "agent_id": {
       "type": "string",
-      "pattern": "^urn:psoul:agent:[a-z0-9-]{3,64}$"
+      "minLength": 1,
+      "maxLength": 128
     },
     "metadata": {
       "type": "object",

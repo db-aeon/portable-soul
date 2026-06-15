@@ -1,6 +1,22 @@
 # OKF profile (Portable Soul binding)
 
-Portable Soul knowledge export uses the [Open Knowledge Format (OKF)](https://github.com/GoogleCloudPlatform/knowledge-catalog) v0.1 as its reference knowledge binding. This profile extends OKF with provenance frontmatter required for conformant export.
+Portable Soul knowledge export uses the [Open Knowledge Format (OKF)](https://github.com/GoogleCloudPlatform/knowledge-catalog) v0.1. Provenance requirements depend on conformance level.
+
+## Level 0 (minimal)
+
+Required frontmatter:
+
+| Field | Required |
+|-------|----------|
+| `type` | MUST (OKF) |
+| `prov_created_at` | MUST |
+| `prov_created_by` | MUST |
+| `prov_source` | MUST |
+| `prov_sovereignty` | RECOMMENDED |
+
+## Level 1 (full)
+
+Adds extended PROV fields — see below.
 
 ## Bundle layout
 

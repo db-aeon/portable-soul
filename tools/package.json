@@ -1,13 +1,14 @@
 {
   "name": "@portable-soul/verify",
-  "version": "0.5.0-draft",
+  "version": "0.6.0-draft",
   "private": true,
   "description": "Portable Soul bundle conformance verifier",
   "type": "module",
   "license": "MIT",
   "scripts": {
     "verify": "node verify.mjs",
-    "verify:reference": "node verify.mjs ../examples/reference-bundle/",
+    "verify:l0": "node verify.mjs ../examples/reference-bundle-l0 --level 0",
+    "verify:l1": "node verify.mjs ../examples/reference-bundle --level 1",
     "build-manifest": "node build-manifest.mjs"
   },
   "dependencies": {

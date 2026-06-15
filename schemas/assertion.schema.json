@@ -39,7 +39,7 @@
           "oneOf": [
             {
               "type": "string",
-              "enum": ["license", "data_class", "visibility", "retention"]
+              "enum": ["license", "data_class", "visibility", "retention", "sovereignty"]
             },
             {
               "type": "string",

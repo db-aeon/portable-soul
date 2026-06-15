@@ -1,0 +1,26 @@
+{
+  "spec_version": "0.6.0-draft",
+  "conformance_level": 0,
+  "bundle_id": "bundle-1781555014749",
+  "created_at": "2026-06-15T20:23:34.749Z",
+  "source_agent_id": "example-assistant",
+  "label": "reference-bundle-l0",
+  "artifact_index": [
+    {
+      "path": "agent.yaml",
+      "sha256": "fe2b12ae48efd7dfb7dae671073f27b28fbaa7d89ec85e79634e20c1ae77d886",
+      "bytes": 227
+    },
+    {
+      "path": "knowledge/prefer-okf.md",
+      "sha256": "ec5992feab3f74fdf3261fdbe161ad57d7564655697a02e503c23ef33b3b8ab7",
+      "bytes": 336
+    },
+    {
+      "path": "skills/hello-portable/SKILL.md",
+      "sha256": "0080cf6703f4492058e4802e5defbe0b24c9eb891c04c8412cef38942becc1e0",
+      "bytes": 415
+    }
+  ],
+  "composition_snapshot": "agent.yaml"
+}

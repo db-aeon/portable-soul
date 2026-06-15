@@ -1,414 +1,208 @@
 # Portable Soul Specification
 
-**Version:** 0.5.0-draft  
+**Version:** 0.6.0-draft  
 **Status:** Proposal for Community Review  
-**Home:** [portablesoul.org](https://portablesoul.org) (planned)
+**Home:** [github.com/db-aeon/portable-soul](https://github.com/db-aeon/portable-soul)
 
 ---
 
 ## Abstract
 
-Portable Soul is a vendor-agnostic specification for declaring how an AI system is composed, recording the provenance of the knowledge it accrues, and exporting that knowledge in portable open formats.
-
-Its purpose is to prevent proprietary AI systems from becoming gatekeepers to compounding knowledge. As value migrates up the stack — the harness, the orchestrator, and the memory system — lock-in forms where the learning loop actually compounds. Portable Soul is deliberately neutral on ownership: it provides the evidentiary substrate on which ownership and licensing claims can be made, contested, and honored.
-
-The specification builds on existing open standards: OKF for knowledge, Agent Skills for workflows, W3C PROV for provenance, and C2PA Content Credentials for optional cryptographic signing.
+Portable Soul standardizes how AI systems declare their architecture, track where knowledge comes from, and export it in open formats. The spec is **tiered**: implement Level 0 first, add Level 1 when you need full harness transparency and memory graphs.
 
 ---
 
 ## 1. Introduction
 
-### 1.1 Problem statement
+### 1.1 Problem
 
-Model portability alone is insufficient. A system that exposes swappable models while hiding its harness, orchestration routing, tool layer, and memory infrastructure is not portable — it is a model host with a proprietary cognitive loop.
+Generalist models are becoming commodities. The moat is the **learning loop** — private evaluations, localized memory, skills that compound with every interaction. If that loop lives inside a proprietary harness, swapping the LLM doesn't help. You still lose your token capital when you leave.
 
-Portable Soul addresses **application-layer portability**: the ability to declare, audit, export, and re-import the full stack that turns inference into compounding organizational knowledge.
+### 1.2 Solution
 
-### 1.2 Design principles
+Four pillars (see [README.md](README.md)):
 
-1. **Declare the whole application layer, don't obscure it.** Every component in the data path is named in a root manifest.
-2. **Record lineage, don't adjudicate ownership.** Provenance is captured as fact. Ownership and license are recorded as contestable assertions.
-3. **Define interfaces, not implementations.** The spec mandates guarantees; specific tools are SHOULD-level reference bindings.
-4. **Resist becoming the new gate.** Verification MUST be possible with open tooling and self-issued credentials.
+1. **Nutrition label** — `agent.yaml`
+2. **Provenance + sovereignty tags** — who created what; filterable export metadata
+3. **`.soul` export** — OKF + Agent Skills + (Level 1+) JSON-LD memory graph
+4. **Portability checklist** — binary pass/fail ([CHECKLIST.md](CHECKLIST.md))
 
-### 1.3 Non-goals
+### 1.3 Conformance tiers
 
-Portable Soul does NOT:
+| Level | Audience | Required |
+|-------|----------|----------|
+| **0** | Anyone exporting skills/knowledge | `manifest.json`, OKF and/or skills, basic provenance |
+| **1** | Platforms, serious builders | + full `agent.yaml`, W3C PROV, memory graph, assertions |
+| **2** | Enterprise | + erasure, optional signing ([privacy-and-erasure.md](privacy-and-erasure.md)) |
 
-- Arbitrate intellectual property disputes
-- Mandate a specific memory engine, harness, or cloud provider
-- Standardize model fine-tuning or weight formats
-- Require centralized registries or certification authorities
-- Define agent persona or personality documents (see [glossary.md](glossary.md))
-- Require zero-knowledge selective disclosure (deferred to future extensions)
+**Start here:** [GETTING-STARTED.md](GETTING-STARTED.md)
 
-### 1.4 Relationship to external standards
+### 1.4 Non-goals
 
-| Standard | Role in Portable Soul |
-|----------|----------------------|
-| [OKF v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog) | Knowledge export binding ([profile](profiles/okf-profile.md)) |
-| [Agent Skills](https://agentskills.io) | Workflow export binding ([profile](profiles/agent-skills-profile.md)) |
-| [W3C PROV](https://www.w3.org/TR/prov-overview/) | Provenance data model |
-| [C2PA](https://c2pa.org/) | Optional signing for text artifacts |
+- Arbitrate IP disputes
+- Mandate a specific harness or memory engine
+- Require proprietary signers or certification authorities
+- Enforce sovereignty tags as system locks (tags are export metadata)
+
+### 1.5 External standards
+
+| Standard | Role |
+|----------|------|
+| [OKF v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog) | Knowledge export |
+| [Agent Skills](https://agentskills.io) | Workflow export |
+| [W3C PROV](https://www.w3.org/TR/prov-overview/) | Level 1+ lineage |
+| [C2PA](https://c2pa.org/) | Level 2 optional signing |
 
 ---
 
 ## 2. Terminology
 
-The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHALL NOT**, **SHOULD**, **SHOULD NOT**, **RECOMMENDED**, **MAY**, and **OPTIONAL** in this document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
+RFC 2119 keywords apply. See [glossary.md](glossary.md).
 
-Defined terms appear in [glossary.md](glossary.md). URI patterns appear in [uri-schemes.md](uri-schemes.md).
-
----
-
-## 3. URI and identity
-
-### 3.1 URN namespace
-
-Portable Soul reserves the `urn:psoul:` namespace. All normative identifiers defined by this specification MUST use this prefix unless explicitly referencing an external URI in `derived_from`.
-
-### 3.2 Entity identity
-
-An Entity's `entity_id` MUST be:
-
-```
-urn:psoul:entity:{hash-prefix}
-```
-
-where `{hash-prefix}` is the first 16 lowercase hex characters of SHA-256 over the **canonical entity payload**:
-
-```json
-{
-  "entity_type": "<entity_type>",
-  "content": "<content>"
-}
-```
-
-Serialization rules:
-
-- JSON object keys in alphabetical order
-- `content` as UTF-8 string (for structured content, JSON-stringify with sorted keys)
-- No insignificant whitespace
-- `content` is `null` for tombstones (see [privacy-and-erasure.md](privacy-and-erasure.md))
-
-When content changes, a new `entity_id` MUST be minted. The prior Entity MUST be referenced in `derived_from` with `kind: prior_version` or `kind: skill`.
-
-### 3.3 Content hashes
-
-`content_hash` MUST use the form `sha256:{64-hex}` over the same material as `content` in the canonical payload, except for tombstones where the hash is computed per [privacy-and-erasure.md](privacy-and-erasure.md).
+**Sovereignty tag** — export metadata classifying who the knowledge belongs to: `user_sovereign`, `org_proprietary`, `portable`, `shared_team`. Recommended at Level 0; assertions layer at Level 1.
 
 ---
 
-## 4. System composition manifest (`agent.yaml`)
+## 3. Level 0 — Export something portable
 
-### 4.1 Purpose
-
-Every conformant system MUST expose a root composition manifest declaring its operational footprint. The manifest enables swapping models, harnesses, orchestrators, memory systems, tools, and connectors without breaking the cognitive loop.
-
-### 4.2 Location
-
-- **Runtime:** Systems SHOULD expose `agent.yaml` at a stable URL or path documented to operators.
-- **Export:** Bundles MAY include a composition snapshot at `agent.yaml` (see §7).
-
-### 4.3 Schema
-
-`agent.yaml` MUST validate against [`schemas/agent.manifest.schema.json`](schemas/agent.manifest.schema.json).
-
-### 4.4 Required topology
-
-The `topology` object MUST enumerate:
-
-| Section | Requirement |
-|---------|-------------|
-| `orchestration` | At least one role (`primary_reasoning_loop`, etc.) |
-| `models` | Every model and provider in the inference path |
-| `memory_systems` | Every system that retains or retrieves memorized state |
-| `tools` | REQUIRED when any tool can read/write memorized data |
-| `connectors` | REQUIRED when external data feeds memorization |
-| `interfaces` | RECOMMENDED — chat, voice, API, scheduled tasks |
-
-### 4.5 Conformance: composition transparency
-
-Any model, harness, orchestrator, memory system, tool, or connector in the memorization data path that is omitted from the manifest is **non-conformant**.
-
-Hidden routing — opaque model selection, undeclared MCP servers, undeclared connector mirrors — MUST be treated as non-conformant.
-
-### 4.6 Example (non-normative)
-
-See [`examples/agent.manifest.example.yaml`](examples/agent.manifest.example.yaml).
-
----
-
-## 5. Entity taxonomy
-
-### 5.1 Core types (closed set)
-
-| `entity_type` | Description |
-|---------------|-------------|
-| `fact` | A retained factual statement |
-| `preference` | User or org preference |
-| `heuristic` | Rule of thumb or decision shortcut |
-| `skill` | Agent Skills workflow artifact |
-| `workflow` | Multi-step process definition |
-| `document` | General document entity |
-| `memory_node` | Graph memory node |
-| `playbook` | Operational playbook (OKF-aligned) |
-| `abstract_concept` | Generalized concept distilled from experience |
-
-### 5.2 Extensions
-
-Implementations MAY use `entity_type` values matching `^x-[a-z0-9-]+$` for domain-specific types. Importers MUST preserve unknown types without rejection.
-
----
-
-## 6. Provenance
-
-### 6.1 Data model
-
-Portable Soul adopts W3C PROV's three core classes:
-
-- **Entity** — unit of knowledge
-- **Activity** — operation that produced it
-- **Agent** — responsible actor (human or software)
-
-### 6.2 Provenance record
-
-Every memorized Entity MUST carry a provenance record validating against [`schemas/entity.provenance.schema.json`](schemas/entity.provenance.schema.json).
-
-Minimum fields:
-
-| Field | Requirement |
-|-------|-------------|
-| `prov.generated_by` | Activity, agent, optional `on_behalf_of` |
-| `prov.derived_from` | At least one source reference |
-| `prov.generated_at` | ISO 8601 UTC timestamp |
-| `content_hash` | Integrity over content |
-
-`prov.in_context` SHOULD reference a workspace URI.
-
-### 6.3 Activity identifiers
-
-Activities SHOULD use `urn:psoul:activity:{verb}` (see [uri-schemes.md](uri-schemes.md)). Core verbs include `memory.retain`, `memory.recall`, `skill.author`, `knowledge.generalize`, `erasure.tombstone`.
-
-### 6.4 Ownership exclusion
-
-`license`, `ownership`, `data_class`, and similar classification fields MUST NOT appear in provenance records. They belong in the assertions layer (§7).
-
-### 6.5 Example (non-normative)
-
-See [`examples/entity.provenance.example.json`](examples/entity.provenance.example.json).
-
----
-
-## 7. Assertions layer
-
-### 7.1 Purpose
-
-Ownership, license, visibility, and retention are **claims about** Entities — not ground truth the system enforces.
-
-### 7.2 Schema
-
-Assertions MUST validate against [`schemas/assertion.schema.json`](schemas/assertion.schema.json).
-
-### 7.3 Conflict policy
-
-When parties attach different or conflicting claims to the same Entity, conformant systems MUST record all assertions side by side. They MUST NOT silently resolve conflicts.
-
-### 7.4 Export filters
-
-Export filters operate on assertions and provenance, never on a hardcoded ownership field.
-
-Example filter: export every Entity with an assertion `claim: license`, `value: portable`.
-
-### 7.5 Example (non-normative)
-
-See [`examples/assertions.example.json`](examples/assertions.example.json).
-
----
-
-## 8. Optional cryptographic signing (C2PA)
-
-### 8.1 Scope
-
-Provenance records, assertions, and bundle manifests MAY be signed using [C2PA](https://c2pa.org/) Content Credentials. C2PA v2.3+ covers unstructured text and model outputs.
-
-### 8.2 Anti-gatekeeping (normative)
-
-Portable Soul conformance MUST NOT require a proprietary signer, registry, or certification authority.
-
-Verification of a `.soul` bundle MUST be possible with open tooling and self-issued credentials.
-
-Any trust list or signer hierarchy MUST be optional. A bundle signed with self-issued credentials MUST remain conformant (verifiable as self-attested, never rejected outright).
-
-Signed manifests SHOULD reference signature files in `bundle.manifest.signatures[]`.
-
----
-
-## 9. Portability — the `.soul` bundle
-
-### 9.1 Definition
-
-A **soul bundle** (or `.soul` bundle) is a directory or archive of provenanced knowledge, skills, and memory importable by any conformant system.
-
-### 9.2 Directory layout
+### 3.1 Bundle layout
 
 ```
 bundle/
-├── manifest.json              # REQUIRED — bundle index + integrity
-├── agent.yaml                 # OPTIONAL — composition snapshot at export
-├── redaction.json             # OPTIONAL — privacy omissions
-├── knowledge/                 # OKF concepts (see OKF profile)
-├── skills/                    # Agent Skills + provenance.json each
-├── memory/
-│   └── graph.jsonld           # PROV-compatible memory graph
-├── assertions/
-│   └── entities.json          # Contestable claims (array of assertion docs)
-└── signatures/                # OPTIONAL — C2PA or self-issued certs
+├── manifest.json          # REQUIRED
+├── knowledge/**/*.md      # OKF markdown (optional if skills present)
+├── skills/*/SKILL.md      # Agent Skills (optional if knowledge present)
+└── agent.yaml             # OPTIONAL minimal nutrition label
 ```
 
-### 9.3 Bundle manifest
+At least one of `knowledge/` or `skills/` MUST be present.
 
-`manifest.json` MUST validate against [`schemas/bundle.manifest.schema.json`](schemas/bundle.manifest.schema.json).
+### 3.2 manifest.json
 
-`artifact_index` MUST list every file in the bundle (except `manifest.json` itself and optional `signatures/`) with correct SHA-256 hashes and byte sizes.
+MUST validate against [`schemas/bundle.manifest.schema.json`](schemas/bundle.manifest.schema.json).
 
-### 9.4 Archive wrapper
+- `spec_version`: `0.6.0-draft`
+- `conformance_level`: `0`
+- `bundle_id`, `source_agent_id`: plain strings (URNs optional)
+- `artifact_index`: path, sha256, bytes for every file except `manifest.json`
 
-Bundles MAY be distributed as `.tar.gz` or `.zip` archives. The archive root MUST contain `manifest.json` at the top level.
+### 3.3 Basic provenance (knowledge)
 
-### 9.5 Knowledge export (OKF)
+OKF `type` plus four fields in YAML frontmatter:
 
-Knowledge MUST export per [profiles/okf-profile.md](profiles/okf-profile.md).
+| Field | Description |
+|-------|-------------|
+| `prov_created_at` | ISO 8601 UTC |
+| `prov_created_by` | Actor id (e.g. `user:jdoe`) |
+| `prov_source` | Source reference (e.g. `session:turn-12`, `manual`) |
+| `prov_sovereignty` | RECOMMENDED: `user_sovereign`, `org_proprietary`, `portable`, `shared_team` |
 
-### 9.6 Skills export (Agent Skills)
+### 3.4 Basic provenance (skills)
 
-Skills MUST export per [profiles/agent-skills-profile.md](profiles/agent-skills-profile.md).
+Provenance MAY live in `SKILL.md` frontmatter (same four fields) OR in optional `provenance.json`.
 
-### 9.7 Memory export (JSON-LD graph)
+### 3.5 Minimal agent.yaml
 
-Memory MUST export as a PROV-compatible JSON-LD graph per [profiles/memory-graph.context.jsonld](profiles/memory-graph.context.jsonld), validating against [`schemas/memory-graph.schema.json`](schemas/memory-graph.schema.json).
+If present, MUST validate against [`schemas/agent.manifest.minimal.schema.json`](schemas/agent.manifest.minimal.schema.json).
 
-The reference profile supports temporal facts, entity relationships, and activity nodes for retain/recall/reflect — without mandating any specific memory engine.
+### 3.6 Level 0 exclusions
 
-### 9.8 Conformance: portability
-
-| Requirement | Detail |
-|-------------|--------|
-| Knowledge | OKF markdown with provenance frontmatter |
-| Skills | Agent Skills directories with `provenance.json` |
-| Memory | JSON-LD graph with PROV vocabulary |
-| Lineage | Every exported artifact carries provenance |
-
----
-
-## 10. Memory graph reference profile
-
-### 10.1 Node types
-
-| `@type` | Description |
-|---------|-------------|
-| `psoul:Fact` | Retained fact (extends `prov:Entity`) |
-| `psoul:Preference` | Preference entity |
-| `psoul:MemoryNode` | Generic graph node |
-| `psoul:SessionTurn` | Conversation turn source |
-| `prov:Activity` | retain, recall, reflect, etc. |
-| `prov:Agent` | Software or human actor |
-
-### 10.2 Edge vocabulary
-
-| Property | Meaning |
-|----------|---------|
-| `prov:wasDerivedFrom` | Lineage to source entity or session |
-| `prov:wasGeneratedBy` | Activity that created the entity |
-| `psoul:supersedes` | Newer entity replaces older (extension) |
-| `psoul:contradicts` | Conflicting fact (extension) |
-| `psoul:recalledIn` | Session where entity was retrieved (extension) |
-
-### 10.3 Dual representation
-
-An Entity MAY appear in both `knowledge/` (OKF) and `memory/graph.jsonld`. `entity_id` and `content_hash` MUST match across representations.
+- Memory graph: OPTIONAL
+- Full W3C PROV: OPTIONAL
+- `urn:psoul:` URIs: OPTIONAL
+- C2PA signing: OPTIONAL
 
 ---
 
-## 11. Import semantics
+## 4. Level 1 — Declare the harness
 
-Conformant importers MUST:
+Everything in Level 0, plus:
 
-1. **Preserve lineage** — import provenance records without stripping `derived_from` chains.
-2. **Accumulate assertions** — add new assertions alongside existing; never silently drop conflicts.
-3. **Not arbitrate** — importers do not resolve conflicting license or ownership claims.
-4. **Verify integrity** — validate `content_hash` and `artifact_index` before integration.
-5. **Honor tombstones** — never resurrect erased content from other artifacts.
+### 4.1 Full agent.yaml
 
-Importers MAY support `merge` or `replace` modes per artifact type. The mode MUST be documented and MUST NOT delete source lineage in the exporting system.
+MUST validate against [`schemas/agent.manifest.schema.json`](schemas/agent.manifest.schema.json). Declares orchestration, models, memory, tools, connectors, interfaces.
 
----
+### 4.2 Full provenance
 
-## 12. Erasure and privacy
+Knowledge MUST use extended OKF frontmatter per [profiles/okf-profile.md](profiles/okf-profile.md). Skills MUST include `provenance.json` per [profiles/agent-skills-profile.md](profiles/agent-skills-profile.md).
 
-See [privacy-and-erasure.md](privacy-and-erasure.md) for normative tombstoning, subject export, selective disclosure, and redaction manifests.
+### 4.3 Memory graph
 
-Conformant systems SHOULD make provenance capture inspectable by the subject, guarantee subject export of provenance describing them, and support selective disclosure via export filters and redaction manifests.
+MUST export `memory/graph.jsonld` — structured JSON-LD with PROV vocabulary. Raw embedding dumps alone are insufficient; lineage MUST travel with facts.
 
----
+Reference profile: [profiles/memory-graph.context.jsonld](profiles/memory-graph.context.jsonld). Temporal graph memory systems (e.g. open-source graph recall frameworks) are non-normative examples.
 
-## 13. Conformance
+### 4.4 Assertions layer
 
-### 13.1 Criteria summary
+Sovereignty and license claims MUST appear in `assertions/entities.json`, NOT in provenance records. Conflicting claims are preserved side by side.
 
-| Property | Conformant | Non-conformant |
-|----------|------------|----------------|
-| Composition transparency | `agent.yaml` enumerates full data path | Only model declared; hidden routing |
-| Provenance integrity | Every Entity has lineage; ownership in assertions only | Untraceable dumps; enforced ownership fields |
-| Portability | OKF + Agent Skills + PROV graph with provenance | Proprietary APIs with no export |
-| Verifiable export | Independently verifiable with open tooling | Requires vendor registry/signer |
+Suggested assertion:
 
-Full criteria: [conformance/criteria.md](conformance/criteria.md).
+```json
+{ "claim": "sovereignty", "value": "user_sovereign", "asserted_by": { "type": "person", "id": "user:jdoe" }, "asserted_at": "..." }
+```
 
-### 13.2 Verifier
+### 4.5 Identity (Level 1)
 
-The reference open verifier at [`tools/verify.mjs`](tools/verify.mjs) implements structural checks. Passing verification is necessary but not sufficient for full operational conformance (e.g. runtime manifest availability is out of scope for bundle-only verification).
-
-### 13.3 Test vectors
-
-See [conformance/test-vectors.md](conformance/test-vectors.md).
+`entity_id` SHOULD use `urn:psoul:entity:{hash-prefix}` per [uri-schemes.md](uri-schemes.md). Plain strings remain valid at Level 0.
 
 ---
 
-## 14. Security considerations
+## 5. Level 2 — Enterprise hardening
 
-### 14.1 Manifest leakage
+Everything in Level 1, plus:
 
-`agent.yaml` exposes internal infrastructure (endpoints, providers). Operators SHOULD restrict manifest access and redact secrets. Secrets MUST NOT appear in exported bundles.
-
-### 14.2 Bundle tampering
-
-`artifact_index` hashes detect tampering. Signatures (§8) add optional non-repudiation.
-
-### 14.3 Provenance as profiling
-
-Exported provenance constitutes a high-fidelity behavioral profile. Distributors MUST treat bundles as sensitive data. See [privacy-and-erasure.md](privacy-and-erasure.md).
-
-### 14.4 Import risks
-
-Malicious bundles could contain crafted skill content. Importers SHOULD sandbox skill installation and validate all paths stay within bundle root.
+- Tombstoning and subject export per [privacy-and-erasure.md](privacy-and-erasure.md)
+- Optional C2PA or self-issued signing (anti-gatekeeping: no proprietary CA required)
+- `assertions/entities.json` REQUIRED
 
 ---
 
-## Appendix A: Schema index
+## 6. Import semantics
 
-| Schema | Path |
-|--------|------|
-| Agent manifest | `schemas/agent.manifest.schema.json` |
-| Bundle manifest | `schemas/bundle.manifest.schema.json` |
-| Entity provenance | `schemas/entity.provenance.schema.json` |
-| Assertions | `schemas/assertion.schema.json` |
-| Memory graph | `schemas/memory-graph.schema.json` |
+Importers MUST preserve lineage, accumulate assertions without silent conflict resolution, and honor tombstones.
 
-## Appendix B: Reference bundle
+---
 
-A minimal conformant bundle: [`examples/reference-bundle/`](examples/reference-bundle/).
+## 7. Conformance verification
 
-## Appendix C: Changelog
+```bash
+node tools/verify.mjs <bundle> --level 0
+node tools/verify.mjs <bundle> --level 1
+```
 
-See [CHANGELOG.md](CHANGELOG.md).
+See [conformance/criteria.md](conformance/criteria.md) and [CHECKLIST.md](CHECKLIST.md).
+
+---
+
+## 8. Security considerations
+
+- `agent.yaml` may expose internal endpoints — restrict access
+- Bundles are high-fidelity behavioral profiles — treat as sensitive
+- Validate bundle paths stay within root on import
+
+---
+
+## Appendix A — Schema index
+
+| Schema | Level |
+|--------|-------|
+| `bundle.manifest.schema.json` | 0+ |
+| `agent.manifest.minimal.schema.json` | 0 |
+| `agent.manifest.schema.json` | 1+ |
+| `entity.provenance.schema.json` | 1+ |
+| `assertion.schema.json` | 1+ |
+| `memory-graph.schema.json` | 1+ |
+
+## Appendix B — Reference bundles
+
+- Level 0: [`examples/reference-bundle-l0/`](examples/reference-bundle-l0/)
+- Level 1: [`examples/reference-bundle/`](examples/reference-bundle/)
+
+## Appendix C — Changelog
+
+[CHANGELOG.md](CHANGELOG.md)
+
+## Appendix D — Full 0.5 detail
+
+Level 1 requirements subsume the detailed 0.5.0-draft design. URI schemes, erasure, and profile bindings remain in their dedicated documents.
