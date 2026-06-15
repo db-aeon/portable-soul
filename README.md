@@ -4,7 +4,7 @@
 **Status:** Proposal for Community Review  
 **Home:** [github.com/db-aeon/portable-soul](https://github.com/db-aeon/portable-soul)
 
-Portable Soul is a vendor-agnostic specification for declaring how an AI system is composed, recording the provenance of the knowledge it accrues, and exporting that knowledge in portable open formats.
+Portable Soul is an open specification for making AI systems' accumulated knowledge portable. Model swap alone is not enough — lock-in now forms in the harness, orchestrator, memory layer, and tools that compound learning over time. This spec defines how to declare that full application stack (`agent.yaml`), record where every piece of knowledge came from (W3C PROV lineage), and export it in vendor-neutral formats: OKF markdown for knowledge, Agent Skills for workflows, and a PROV-compatible graph for memory. Ownership and licensing are modeled as contestable assertions on top of immutable lineage — the spec records facts, it does not adjudicate who owns what. The goal is simple: your system's song should not belong to whoever holds the box.
 
 ## Quick start
 
@@ -58,7 +58,7 @@ Verifier tooling: MIT (see [tools/package.json](tools/package.json)).
 
 ## Contributing
 
-This package may be extracted to a dedicated repository. Until then, propose changes via pull request with:
+Propose changes via pull request to this repository:
 
 - Schema updates in `schemas/`
 - Reference bundle updates when normative behavior changes
